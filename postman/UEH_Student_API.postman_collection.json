@@ -1,0 +1,385 @@
+{
+  "info": {
+    "name": "UEH Student API - API_GUIDE 2026-10-13",
+    "description": "Tạo từ tài liệu API_GUIDE.pdf, không chứa mật khẩu/token thật. Chọn environment UEH Student - Local Testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Authentication",
+      "item": [
+        {
+          "name": "POST Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/login",
+            "description": "Điền mssv/password trong Environment. Script Test lưu token và refresh_token vào Environment, không log bí mật.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mssv\": \"{{mssv}}\",\n  \"mat_khau\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.test('Bearer token returned', () => {",
+                  "    pm.expect(data.token).to.be.a('string').and.not.empty;",
+                  "    pm.expect(data.refresh_token).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "  pm.environment.set('access_token', data.token);",
+                  "  pm.environment.set('refresh_token', data.refresh_token);",
+                  "  pm.environment.set('token_expires_in', String(data.expires_in || 3600));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/refresh-token",
+            "description": "CHÚ Ý: mỗi refresh_token chỉ dùng MỘT LẦN. Request Test sẽ thay ngay cả hai token.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.test('Bearer token returned', () => {",
+                  "    pm.expect(data.token).to.be.a('string').and.not.empty;",
+                  "    pm.expect(data.refresh_token).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "  pm.environment.set('access_token', data.token);",
+                  "  pm.environment.set('refresh_token', data.refresh_token);",
+                  "  pm.environment.set('token_expires_in', String(data.expires_in || 3600));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Student & Attendance",
+      "item": [
+        {
+          "name": "GET Student Info",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/student-info",
+            "description": "Auth: Bearer {{access_token}}. Đọc thông tin cá nhân thực của sinh viên.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) pm.test(\"MSSV from API\", () => { pm.expect(pm.response.json().mssv).to.eql(pm.environment.get(\"mssv\")); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Attendance (no GPS)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/attendance",
+            "description": "Dùng mã hợp lệ admin cấp. Nếu server trả lỗi 400 yêu cầu vị trí, chạy Attendance with GPS với vị trí thực.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{attendance_code}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Attendance (GPS required)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/attendance",
+            "description": "YÊU CẦU: Điền latitude, longitude bằng số GPS THẬT trước khi Send, không để trống. Đây là POST cần vị trí; chỉ dùng mã admin có bật GPS.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{attendance_code}}\",\n  \"latitude\": {{latitude}},\n  \"longitude\": {{longitude}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Menu",
+      "item": [
+        {
+          "name": "GET Menu",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/menu",
+            "description": "Trả menu icon_name/menu_name/menu_url/ordering. Cần Bearer Token.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) pm.test(\"Menu is array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - News (public)",
+      "item": [
+        {
+          "name": "GET Featured News",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/news/featured",
+            "description": "Không cần token. Tối đa 5 tin: 1 tin nổi bật và 4 tin theo chuyên mục.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) pm.test(\"Featured is array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Category News (limit/offset)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/news?cat_uid={{cat_uid}}&limit={{limit}}&offset={{offset}}",
+            "description": "Kiểm tra Lazy Load: offset=0 rồi 20,40,... dừng khi offset + items.length >= total.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) pm.test(\"Pagination response\", () => { const d=pm.response.json(); pm.expect(d).to.have.all.keys(\"total\",\"limit\",\"offset\",\"items\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET News Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/news/{{news_uid}}",
+            "description": "Điền news_uid lấy từ response của Featured/Category. content là HTML.",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.expect(pm.response.code).to.equal(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
