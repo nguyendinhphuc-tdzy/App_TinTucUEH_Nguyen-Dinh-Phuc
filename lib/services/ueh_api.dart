@@ -135,8 +135,9 @@ class UehApi {
       var msg='API lỗi (HTTP ${res.statusCode}).';
       if(parsed is Map) {
         final serverMsg=parsed['message']?.toString().trim();
-        if(serverMsg!=null && serverMsg.isNotEmpty) msg=serverMsg;
-        else if(parsed['errors'] is Map) {
+        if (serverMsg != null && serverMsg.isNotEmpty) {
+          msg = serverMsg;
+        } else if (parsed['errors'] is Map) {
           final errors=parsed['errors'] as Map;
           final first=errors.isEmpty ? null : errors.values.first;
           if(first is List && first.isNotEmpty) msg=first.first.toString();

@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     appBar:AppBar(title:const Text('Đăng nhập UEH Student'),backgroundColor:uehTeal,foregroundColor:Colors.white),
     body:Center(child:SingleChildScrollView(padding:const EdgeInsets.all(28),child:ConstrainedBox(
       constraints:const BoxConstraints(maxWidth:470),child:Form(key:_form,child:Column(children:[
-        Image.asset('assets/img/logo-primary.png',height:110,errorBuilder:(_,__,___)=>const Icon(Icons.school,size:90,color:uehTeal)),
+        Image.asset('assets/img/logo-primary.png',height:110,errorBuilder:(_,_,_)=>const Icon(Icons.school,size:90,color:uehTeal)),
         const SizedBox(height:24),const Text('UEH Student',style:TextStyle(fontSize:29,fontWeight:FontWeight.bold,color:uehTeal)),
         const SizedBox(height:12),const Text('Đăng nhập để xem thẻ sinh viên, menu và điểm danh',textAlign:TextAlign.center),
         const SizedBox(height:34),TextFormField(controller:_mssv,keyboardType:TextInputType.number,

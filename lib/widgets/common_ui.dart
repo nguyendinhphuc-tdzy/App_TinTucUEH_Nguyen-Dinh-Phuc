@@ -43,5 +43,5 @@ class NetworkPicture extends StatelessWidget {
     child:url==null ? const ColoredBox(color:Color(0xFFEDF4F4),child:Center(child:Icon(Icons.image_not_supported_outlined))) :
     Image.network(url!,fit:BoxFit.cover,loadingBuilder:(context,child,progress)=>progress==null ? child :
       const ColoredBox(color:Color(0xFFEDF4F4),child:Center(child:CircularProgressIndicator())),
-      errorBuilder:(_,__,___)=>const ColoredBox(color:Color(0xFFEDF4F4),child:Center(child:Icon(Icons.broken_image_outlined)))));
+      errorBuilder:(_,_,_)=>const ColoredBox(color:Color(0xFFEDF4F4),child:Center(child:Icon(Icons.broken_image_outlined)))));
 }

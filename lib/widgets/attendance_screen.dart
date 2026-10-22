@@ -47,11 +47,13 @@ class _AttendanceScreenState extends State<AttendanceScreen>{
         final p=await _location();
         result=await UehApi.instance.attendance(code,latitude:p.latitude,longitude:p.longitude);
       }
-      if(mounted)await showDialog<void>(context:context,builder:(ctx)=>AlertDialog(
+      if (mounted) {
+        await showDialog<void>(context:context,builder:(ctx)=>AlertDialog(
         title:const Row(children:[Icon(Icons.check_circle,color:Colors.green),SizedBox(width:8),Text('Điểm danh thành công')]),
         content:Text('${result.message}\n${result.sessionName}\n${result.name} (${result.mssv})\nLần điểm danh: ${result.checkInNumber}'
           '${result.distanceMeters==null?'':'\nKhoảng cách: ${result.distanceMeters!.toStringAsFixed(1)} m'}'),
         actions:[TextButton(onPressed:()=>Navigator.pop(ctx),child:const Text('Đóng'))]));
+      }
     } on SessionExpiredException catch(e){if(mounted){_message('$e');context.go('/login');}}
       catch(e){if(mounted)_message('$e');}
     finally{if(mounted)setState(()=>_working=false);}

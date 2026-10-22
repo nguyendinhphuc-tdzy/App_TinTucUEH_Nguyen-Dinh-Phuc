@@ -17,6 +17,6 @@ class _SplashScreenState extends State<SplashScreen>{
   }
   @override Widget build(BuildContext context)=>Scaffold(body:SizedBox.expand(
     child:Image.asset('assets/img/ueh_splash.png',fit:BoxFit.cover,
-      errorBuilder:(_,__,___)=>const ColoredBox(color:Color(0xFF00636B),
+      errorBuilder:(_,_,_)=>const ColoredBox(color:Color(0xFF00636B),
         child:Center(child:Text('UEH STUDENT',style:TextStyle(color:Colors.white,fontSize:28)))))));
 }

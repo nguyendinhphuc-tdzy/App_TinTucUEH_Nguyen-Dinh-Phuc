@@ -29,7 +29,7 @@ class _AccountScreenState extends State<AccountScreen>{
       return RefreshIndicator(onRefresh:()async{_reload();try{await _future;}catch(_){}},child:ListView(padding:const EdgeInsets.all(20),children:[
         const SizedBox(height:14),Center(child:CircleAvatar(radius:92,backgroundColor:const Color(0xFFFFE4CD),
           child:ClipOval(child:s.avatarUrl.isEmpty ? const Icon(Icons.person,size:80) :
-          Image.network(s.avatarUrl,width:170,height:170,fit:BoxFit.cover,errorBuilder:(_,__,___)=>const Icon(Icons.person,size:80))))),
+          Image.network(s.avatarUrl,width:170,height:170,fit:BoxFit.cover,errorBuilder:(_,_,_)=>const Icon(Icons.person,size:80))))),
         const SizedBox(height:0),Card(color:uehOrange,shape:RoundedRectangleBorder(borderRadius:BorderRadius.circular(17)),
           child:Padding(padding:const EdgeInsets.all(24),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
             const Center(child:Text('SINH VIÊN',style:TextStyle(color:Colors.white,fontSize:16,letterSpacing:2))),

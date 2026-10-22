@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../models/ueh_models.dart';
 import '../services/ueh_api.dart';
 import 'app_drawer.dart';
@@ -76,5 +75,5 @@ class _NewsCard extends StatelessWidget {
 Widget _sdgs(List<int> values) => values.isEmpty?const SizedBox.shrink():Padding(
   padding:const EdgeInsets.only(top:10,bottom:4),child:Wrap(spacing:7,children:[
     for(final id in values) Image.asset('lib/sgds/sdg-$id.png',height:31,width:31,
-      errorBuilder:(_,__,___)=>const SizedBox.shrink()),
+      errorBuilder:(_,_,_)=>const SizedBox.shrink()),
   ]));

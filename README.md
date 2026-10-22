@@ -16,7 +16,7 @@ Nguồn: **App_SinhVienUEH_Nguyen Dinh Phuc.zip** do người dùng cung cấp (
 | Menu API + SQLite cache offline | Có | Chưa kiểm chứng live |
 | 1 tin nổi bật + 4 tin theo API | Có | Chưa kiểm chứng live |
 | Category news lazy loading, limit/offset/total | Có | Chưa kiểm chứng live |
-| Detail news với HTML renderer | Có | Chưa kiểm chứng live |
+| Detail news với HTML renderer (`flutter_widget_from_html_core`) | Có | Chưa kiểm chứng live |
 | Firebase FCM/notification history | **Chưa tích hợp** | Cần Firebase project + `flutterfire configure` |
 | Face recognition | **API GUIDE không có endpoint** | Không thể xác thực thật nếu không có backend |
 
@@ -106,3 +106,9 @@ Token được lưu trong `flutter_secure_storage`. Password không lưu trong c
 ### Về UI giống UEH Student
 
 Bản này là bước tích hợp dữ liệu thật theo API Guide, UI cơ bản bám màu UEH; chưa thể khẳng định giống **100%** app UEH Student thương mại nếu không có bộ ảnh tham chiếu đầy đủ tất cả màn hình.
+
+## Sửa lỗi tương thích Flutter 3.47.x
+
+- FontAwesome v11 trả `FaIconData` thay vì `IconData`: Drawer sử dụng `FaIcon` cho icon Font Awesome và `Icon` cho icon Material.
+- Thay `flutter_html: ^3.0.0` (lỗi `qs.matches` ở cấu hình gói đang dùng) bằng `flutter_widget_from_html_core: ^0.17.4` và `HtmlWidget` để render nội dung HTML.
+- Sau khi pull commit này: chạy `flutter pub get`, `flutter analyze`, `flutter test` trước khi `flutter run`. Các phiên bản trong `pubspec.lock` sẽ được Flutter cập nhật trên máy bạn.

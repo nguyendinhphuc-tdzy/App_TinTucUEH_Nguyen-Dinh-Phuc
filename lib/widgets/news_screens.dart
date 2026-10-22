@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import '../models/ueh_models.dart';
 import '../services/ueh_api.dart';
 import 'common_ui.dart';
@@ -81,7 +81,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen>{
         const SizedBox(height:8),Text(n.title,style:const TextStyle(fontSize:23,fontWeight:FontWeight.w800)),
         const SizedBox(height:12),NetworkPicture(url:n.backgroundImage??n.thumbnailImage,height:220),
         const SizedBox(height:18),Text(n.summary,style:const TextStyle(fontWeight:FontWeight.w500,fontSize:16)),
-        const SizedBox(height:12),Html(data:n.content??'<p>Chưa có nội dung bài viết.</p>'),
+        const SizedBox(height:12),HtmlWidget(n.content??'<p>Chưa có nội dung bài viết.</p>'),
       ]);
     }),
   );
