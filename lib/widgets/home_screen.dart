@@ -6,13 +6,30 @@ import 'common_ui.dart';
 import 'news_screens.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.loadFeatured});
+
+  /// Optional loader for deterministic widget tests; defaults to the live API.
+  final Future<List<NewsArticle>> Function()? loadFeatured;
+
   @override State<HomeScreen> createState()=>_HomeScreenState();
 }
 class _HomeScreenState extends State<HomeScreen>{
   late Future<List<NewsArticle>> _featured;
-  @override void initState(){super.initState();_reload();}
-  void _reload()=>setState(()=>_featured=UehApi.instance.featuredNews());
+
+  @override
+  void initState() {
+    super.initState();
+    _featured = _fetchFeatured();
+  }
+
+  Future<List<NewsArticle>> _fetchFeatured() =>
+      widget.loadFeatured?.call() ?? UehApi.instance.featuredNews();
+
+  void _reload() {
+    setState(() {
+      _featured = _fetchFeatured();
+    });
+  }
   @override Widget build(BuildContext context)=>Scaffold(
     appBar:AppBar(backgroundColor:uehTeal,foregroundColor:Colors.white,
       title:const Text('UEH Student'),centerTitle:true,

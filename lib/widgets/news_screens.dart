@@ -62,14 +62,31 @@ class _CategoryNewsScreenState extends State<CategoryNewsScreen>{
 }
 
 class NewsDetailScreen extends StatefulWidget {
-  const NewsDetailScreen({super.key,required this.uid});
+  const NewsDetailScreen({super.key,required this.uid, this.loadDetail});
   final int uid;
+
+  /// Optional loader for widget tests; uses the live API in production.
+  final Future<NewsArticle> Function(int uid)? loadDetail;
+
   @override State<NewsDetailScreen> createState()=>_NewsDetailScreenState();
 }
 class _NewsDetailScreenState extends State<NewsDetailScreen>{
   late Future<NewsArticle> _future;
-  @override void initState(){super.initState();_reload();}
-  void _reload()=>setState(()=>_future=UehApi.instance.newsDetail(widget.uid));
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _fetchDetail();
+  }
+
+  Future<NewsArticle> _fetchDetail() =>
+      widget.loadDetail?.call(widget.uid) ?? UehApi.instance.newsDetail(widget.uid);
+
+  void _reload() {
+    setState(() {
+      _future = _fetchDetail();
+    });
+  }
   @override Widget build(BuildContext context)=>Scaffold(
     appBar:AppBar(title:const Text('Chi tiết tin tức'),backgroundColor:uehTeal,foregroundColor:Colors.white),
     body:FutureBuilder<NewsArticle>(future:_future,builder:(ctx,snap){
