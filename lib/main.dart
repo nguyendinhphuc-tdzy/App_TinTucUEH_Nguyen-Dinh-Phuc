@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'routers/router.dart';
+import 'services/notification_service.dart';
 
-void main(){WidgetsFlutterBinding.ensureInitialized();runApp(const MyApp());}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.instance.initialize();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

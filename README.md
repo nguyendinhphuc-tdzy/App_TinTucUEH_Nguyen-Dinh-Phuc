@@ -112,3 +112,7 @@ Bản này là bước tích hợp dữ liệu thật theo API Guide, UI cơ b�
 - FontAwesome v11 trả `FaIconData` thay vì `IconData`: Drawer sử dụng `FaIcon` cho icon Font Awesome và `Icon` cho icon Material.
 - Thay `flutter_html: ^3.0.0` (lỗi `qs.matches` ở cấu hình gói đang dùng) bằng `flutter_widget_from_html_core: ^0.17.4` và `HtmlWidget` để render nội dung HTML.
 - Sau khi pull commit này: chạy `flutter pub get`, `flutter analyze`, `flutter test` trước khi `flutter run`. Các phiên bản trong `pubspec.lock` sẽ được Flutter cập nhật trên máy bạn.
+
+## Firebase Messaging
+
+Cấu hình Firebase Cloud Messaging và lịch sử SQLite: xem [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
